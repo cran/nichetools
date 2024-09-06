@@ -114,6 +114,23 @@ extract_layman <- function(data,
     strings are 'bay' or 'ml'.")
   }
 
+  if (type %in% "ml") {
+    if (!is.matrix(data)) {
+      cli::cli_abort(c(
+        "The `data` argument must be a matrix.",
+        "i" = "Please provide data in matrix format."
+      ))
+    }
+  }
+  if (type %in% "bay") {
+
+    if (!is.list(data)) {
+      cli::cli_abort(c(
+        "The `data` argument must be a list.",
+        "i" = "Please provide data in list format."
+      ))
+    }
+  }
 
   # Check if `community_df` is a two-column data.frame
   if (!is.null(community_df)) {
@@ -141,34 +158,25 @@ extract_layman <- function(data,
     cli::cli_abort("Invalid characters for 'data_format'. Allowed character
     strings are 'wide' or 'long'.")
   }
-# ---- set isotopes values -----=
-    if (is.null(isotope_x)) {
-      isotope_x <- 13
-    }
-
-    if (is.null(isotope_y)) {
-      isotope_y <- 15
-    }
-
-    # ---- set elemental number -----
-    if (is.null(element_x)) {
-      element_x <- "C"
-    }
-
-    if (is.null(element_y)) {
-      element_y <- "N"
-    }
-
-
-  if(type %in% "bay") {
-
-    if (!is.list(data)) {
-    cli::cli_abort(c(
-      "The `data` argument must be a list.",
-      "i" = "Please provide data in list format."
-    ))
+  # ---- set isotopes values -----=
+  if (is.null(isotope_x)) {
+    isotope_x <- 13
   }
 
+  if (is.null(isotope_y)) {
+    isotope_y <- 15
+  }
+
+  # ---- set elemental number -----
+  if (is.null(element_x)) {
+    element_x <- "C"
+  }
+
+  if (is.null(element_y)) {
+    element_y <- "N"
+  }
+
+  if(type %in% "bay") {
 
     df_layman <- data |>
       purrr::map(~ as_tibble(.x)) |>
@@ -214,12 +222,6 @@ extract_layman <- function(data,
     }
   }
   if (type %in% "ml") {
-    if (!is.matrix(data)) {
-      cli::cli_abort(c(
-        "The `data` argument must be a matrix.",
-        "i" = "Please provide data in matrix format."
-      ))
-    }
 
     df_layman <- data |>
       as.data.frame() |>
@@ -227,8 +229,8 @@ extract_layman <- function(data,
         metric = rownames(data)
       ) |>
       tidyr::pivot_longer(cols = -metric,
-                   names_to = "community",
-                   values_to = "estimate") |>
+                          names_to = "community",
+                          values_to = "estimate") |>
       dplyr::left_join(community_df, by = "community") |>
       dplyr::mutate(
         labels = factor(dplyr::case_when(
@@ -256,3 +258,5 @@ extract_layman <- function(data,
     return(df_layman)
   }
 }
+
+
