@@ -8,6 +8,14 @@ test_that("Test if data object is list ", {
 
 })
 
+test_that("Test if data object is list ", {
+  expect_error(extract_mu(
+    data = niw_fish_post,
+    pkg = "nicherover"
+  ), "Invalid characters for 'pkg'. Allowed character strings are 'nicheROVER' or 'SIBER'.")
+
+})
+
 
 test_that("error if data isn't a list", {
   dat <- data.frame(
@@ -42,6 +50,15 @@ test_that("test that the object type and length are correct ", {
                info = "Number of columns is not as expected.")
 })
 
+
+test_that("test that wide and long errror are correct ", {
+  expect_error(extract_mu(
+    data = niw_fish_post,
+    data_format = "wider"
+  ), "Invalid characters for 'data_format'. Allowed character strings are 'wide' or 'long'.")
+})
+
+
 test_that("test that the object type and length are correct ", {
   df_mu_test <- extract_mu(
     data = niw_fish_post, data_format = "wide"
@@ -74,6 +91,41 @@ test_that("Check if column names extracted are correct", {
 })
 
 
+test_that("test that isotope a and b error when not characters ", {
+  expect_error(extract_mu(
+    data = niw_fish_post,
+    data_format = "wide",
+    isotope_names = 1
+  ), "The supplied argument for 'isotope_names' must be a vector of characters.")
+
+})
+test_that("test that isotope a and b error when not characters ", {
+  expect_error(extract_mu(
+    data = niw_fish_post,
+    data_format = "wide",
+    isotope_names = c(1, 2)
+  ), "The supplied argument for 'isotope_names' must be a vector of characters.")
+
+})
+test_that("test that isotope a and b error when not characters ", {
+  expect_error(extract_mu(
+    data = niw_fish_post,
+    data_format = "wide",
+    isotope_names = c("d13c")
+  ), "The 'isotope_names' vector must have exactly 2 elements, representing isotope_a and isotope_b.")
+
+})
+
+# test_that("test that isotope a and b error when not characters ", {
+#   expect_error(extract_mu(
+#     data = niw_fish_post,
+#     data_format = "wide",
+#     isotope_b = 1
+#   ), "The supplied argument for 'isotope_b' must be a character.")
+#
+# })
+
+
 test_that("Check if column order", {
 
   expected_names <- c("metric", "sample_name", "sample_number",
@@ -85,16 +137,40 @@ test_that("Check if column order", {
   expect_equal(names(df_mu_test_1), expected_names)
 })
 
+
+library(SIBER)
+
+demo.siber.data.2$group_name <- as.factor(demo.siber.data.2$group)
+
+demo.siber.data.2$group <- as.numeric(demo.siber.data.2$group_name) |>
+  as.character()
+
+demo.siber.data.2$community_name <- as.factor(demo.siber.data.2$community)
+
+demo.siber.data.2$community <- as.numeric(demo.siber.data.2$community_name) |>
+  as.character()
+
+cg_names <- demo.siber.data.2 |>
+  dplyr::distinct(community, group, community_name, group_name)
+
+
+
+
+
+
 # ---- siber ----
 test_that("Test if data object is list ", {
   df_mu <- extract_mu(
     data = post_sam_siber,
-    pkg = "SIBER"
+    pkg = "SIBER",
+    community_df = cg_names
   )
 
   expect_type(object = df_mu, type = "list")
 
 })
+
+
 
 
 test_that("error if data isn't a list", {
@@ -107,6 +183,8 @@ test_that("error if data isn't a list", {
     extract_mu(
       data = dat,
       pkg = "SIBER",
+      community_df = cg_names
+
     ), regexp = "Input 'data' must be a list."
   )
 
@@ -116,13 +194,14 @@ test_that("error if data isn't a list", {
 test_that("test that the object type and length are correct ", {
   df_mu_test <- extract_mu(
     data = post_sam_siber,
-    pkg = "SIBER"
+    pkg = "SIBER",
+    community_df = cg_names
   )
   # check the type returned data frame should be data frame
   expect_s3_class(object = df_mu_test, class =  "data.frame")
   # excreted dimensions
-  expected_rows <- 48000
-  expected_cols <- 5
+  expected_rows <- 40000
+  expected_cols <- 9
 
 
   # Check the dimensions using expect_equal
@@ -136,13 +215,14 @@ test_that("test that the object type and length are correct ", {
   df_mu_test <- extract_mu(
     data = post_sam_siber,
     pkg = "SIBER",
+    community_df = cg_names,
     data_format = "wide"
   )
   # check the type returned data frame should be data frame
   expect_s3_class(object = df_mu_test, class =  "data.frame")
   # excreted dimensions
-  expected_rows <- 24000
-  expected_cols <- 5
+  expected_rows <- 20000
+  expected_cols <- 9
 
 
   # Check the dimensions using expect_equal
@@ -155,12 +235,15 @@ test_that("test that the object type and length are correct ", {
 
 test_that("Check if column names extracted are correct", {
 
-  expected_names <- c("metric", "sample_name", "sample_number", "d13c", "d15n")
+  expected_names <- c("metric",  "community",
+                      "group", "sample_name", "sample_number", "community_name",
+                      "group_name",  "d13c", "d15n")
 
   df_mu_test <- extract_mu(
     data = post_sam_siber,
     pkg = "SIBER",
-    data_format = "wide"
+    data_format = "wide",
+    community_df = cg_names
   )
 
   expect_equal(names(df_mu_test), expected_names)
@@ -169,12 +252,57 @@ test_that("Check if column names extracted are correct", {
 
 test_that("Check if column order", {
 
-  expected_names <- c("metric", "sample_name", "sample_number",
+  expected_names <- c("metric",  "community",
+                      "group", "sample_name", "sample_number", "community_name",
+                      "group_name",
                       "isotope", "mu_est")
 
   df_mu_test_1 <- extract_mu(
     data = post_sam_siber,
-    pkg = "SIBER"
+    pkg = "SIBER",
+    community_df = cg_names
   )
   expect_equal(names(df_mu_test_1), expected_names)
+})
+
+# Test 4: Invalid community_df (not a data.frame or not 4 columns)
+test_that("extract_mu throws an error if community_df is not a valid data.frame", {
+  invalid_community_df <- data.frame(community = c("A", "B"), group = c("G1", "G2"))
+  expect_error(extract_mu(data = post_sam_siber,
+                          pkg = "SIBER",
+                          community_df = invalid_community_df),
+               "The `community_df` argument must be a data.frame with exactly four columns.")
+})
+
+# Test 5: Missing 'community' or 'group' column in community_df
+test_that("extract_mu throws an error if community_df isn't 4 columns", {
+  invalid_community_df <- data.frame(
+    col2 = c("A", "B", "C"),
+    col3 = c(1, 2, 3),
+    col4 = c(4, 5, 6)
+  )
+
+  expect_error(
+    extract_mu(data = post_sam_siber,
+               pkg = "SIBER",
+               community_df = invalid_community_df),
+    regexp = "The `community_df` argument must be a data.frame with exactly four columns.")
+
+})
+test_that("extract_mu throws an error if community_df is missing 'community' or 'group' columns", {
+
+
+  invalid_community_df_2 <- data.frame(
+    col2 = c("A", "B", "C"),
+    col3 = c(1, 2, 3),
+    col4 = c(4, 5, 6),
+    col5 = c(4, 6, 3)
+  )
+
+
+  expect_error(
+    extract_mu(data = post_sam_siber,
+               pkg = "SIBER",
+               community_df = invalid_community_df_2),
+    regexp = "The data frame does not contain a column named 'community' and 'group'.")
 })

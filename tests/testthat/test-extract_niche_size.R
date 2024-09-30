@@ -119,32 +119,32 @@ demo.siber.data.2$group <- as.numeric(demo.siber.data.2$group_name) |>
 cg_names <- demo.siber.data.2 |>
   dplyr::distinct(group, community, group_names, community_names)
 
-demo_siber_data <- demo.siber.data.2 |>
-  dplyr::select(iso1:community)
-siber_example <- createSiberObject(demo_siber_data)
-
-# ---- create priors -----
-# options for running jags
-parms_1 <- list()
-parms_1$n.iter <- 2 * 10^4   # number of iterations to run the model for
-parms_1$n.burnin <- 1 * 10^3 # discard the first set of values
-parms_1$n.thin <- 10     # thin the posterior by this many
-parms_1$n.chains <- 2        # run this many chains
-
-# define the priors
-priors_1 <- list()
-priors_1$R <- 1 * diag(2)
-priors_1$k <- 2
-priors_1$tau.mu <- 1.0E-3
+# demo_siber_data <- demo.siber.data.2 |>
+#   dplyr::select(iso1:community)
+# siber_example <- createSiberObject(demo_siber_data)
+#
+# # ---- create priors -----
+# # options for running jags
+# parms_1 <- list()
+# parms_1$n.iter <- 2 * 10^4   # number of iterations to run the model for
+# parms_1$n.burnin <- 1 * 10^3 # discard the first set of values
+# parms_1$n.thin <- 10     # thin the posterior by this many
+# parms_1$n.chains <- 2        # run this many chains
+#
+# # define the priors
+# priors_1 <- list()
+# priors_1$R <- 1 * diag(2)
+# priors_1$k <- 2
+# priors_1$tau.mu <- 1.0E-3
 
 # ---- fit ellipse -----
 # fit the ellipses which uses an Inverse Wishart prior
 # on the covariance matrix Sigma, and a vague normal prior on the
 # means. Fitting is via the JAGS method.
-ellipses_posterior <- siberMVN(siber_example, parms_1, priors_1)
+# ellipses_posterior <- siberMVN(post_sam_siber, parms_1, priors_1)
 
 
-sea_b <- siberEllipses(corrected.posteriors = ellipses_posterior)
+sea_b <- siberEllipses(corrected.posteriors = post_sam_siber)
 
 test_that("output data is the correct size, class, and column names are valid", {
 
@@ -162,6 +162,14 @@ test_that("output data is the correct size, class, and column names are valid", 
   # Check that the "ID" column exists
   expect_true("id" %in% colnames(test_3), info = "The 'id' column is missing in the output data.")
 
+})
+test_that("output pkg is correctly selected", {
+
+  expect_error(extract_niche_size(
+    data = sea_b,
+    pkg = "siber",
+    community_df = cg_names
+  ))
 })
 
 
@@ -205,12 +213,55 @@ test_that("output coilumn number", {
     community_df = cg_names
   )
 
-expected_cols <- 6
-expected_rows <- 20000
+  expected_cols <- 6
+  expected_rows <- 20000
 
-# Check the dimensions using expect_equal
-expect_equal(nrow(test_7), expected_rows,
-             info = "Number of rows is not as expected.")
-expect_equal(ncol(test_7), expected_cols,
-             info = "Number of columns is not as expected.")
+  # Check the dimensions using expect_equal
+  expect_equal(nrow(test_7), expected_rows,
+               info = "Number of rows is not as expected.")
+  expect_equal(ncol(test_7), expected_cols,
+               info = "Number of columns is not as expected.")
+})
+
+
+# Test 4: Invalid community_df (not a data.frame or not 4 columns)
+test_that("extract_niche_size throws an error if community_df is not a valid data.frame", {
+  invalid_community_df <- data.frame(community = c("A", "B"), group = c("G1", "G2"))
+  expect_error(extract_niche_size(data = sea_b,
+                                  pkg = "SIBER",
+                                  community_df = invalid_community_df),
+               "The `community_df` argument must be a data.frame with exactly four columns.")
+})
+
+# Test 5: Missing 'community' or 'group' column in community_df
+test_that("extract_niche_size throws an error if community_df isn't 4 columns", {
+  invalid_community_df <- data.frame(
+    col2 = c("A", "B", "C"),
+    col3 = c(1, 2, 3),
+    col4 = c(4, 5, 6)
+  )
+
+  expect_error(
+    extract_niche_size(data = sea_b,
+                       pkg = "SIBER",
+               community_df = invalid_community_df),
+    regexp = "The `community_df` argument must be a data.frame with exactly four columns.")
+
+})
+test_that("extract_niche_size throws an error if community_df is missing 'community' or 'group' columns", {
+
+
+  invalid_community_df_2 <- data.frame(
+    col2 = c("A", "B", "C"),
+    col3 = c(1, 2, 3),
+    col4 = c(4, 5, 6),
+    col5 = c(4, 6, 3)
+  )
+
+
+  expect_error(
+    extract_niche_size(data = sea_b,
+                       pkg = "SIBER",
+               community_df = invalid_community_df_2),
+    regexp = "The data frame does not contain a column named 'community' and 'group'.")
 })

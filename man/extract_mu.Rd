@@ -7,9 +7,9 @@
 extract_mu(
   data,
   pkg = NULL,
-  isotope_a = NULL,
-  isotope_b = NULL,
-  data_format = NULL
+  isotope_names = NULL,
+  data_format = NULL,
+  community_df = NULL
 )
 }
 \arguments{
@@ -22,15 +22,24 @@ or \href{https://cran.r-project.org/package=SIBER}{{SIBER}}, respectfully.}
 you're using. Defaults to \code{"nicheROVER"}.
 Alternatively the user can supply the argument with \code{"SIBER"}.}
 
-\item{isotope_a}{a \code{character} string to change the column name
-of the first isotope used in the analysis. Defaults to \code{"d13c"}.}
-
-\item{isotope_b}{a \code{character} string to change the name of second isotope
-used in the analysis. Defaults to \code{"d15n"}.}
+\item{isotope_names}{is a vector of \code{character} string used change the column name
+of isotopes used in the analysis. Defaults to \code{c("d13c", "d15n")}.}
 
 \item{data_format}{a \code{character} string that decides whether the returned object is
 in long or wide format. Default is \code{"long"}, with the alternative supplied
 being \code{"wide"}.}
+
+\item{community_df}{a four column data frame. One of the columns has to be named
+\code{community} and the data in the column will be \code{numeric} as a \code{character}
+string(e.g., \verb{"1", "2", "3"}). This is the order of the community names
+and will be used to join the actual community names to the correct data.
+These are the same class and values required by the function, \code{createSiberObject()}
+from \href{https://CRAN.R-project.org/package=SIBER}{{SIBER}}.
+The second column will be the names of the groups that are needed to supply
+required by the function, \code{createSiberObject()}
+from \href{https://CRAN.R-project.org/package=SIBER}{{SIBER}}.
+The third and fourth columns contains the actual names of the communities
+and groups the user is working with (e.g., \code{"region"}, \code{"common_name"}).}
 }
 \value{
 Returns a \code{tibble} of extracted estimates of \eqn{\mu} created by the
@@ -51,9 +60,31 @@ Extract Bayesian estimates of \eqn{\mu} from data objects created by
 extract_mu(
 data = niw_fish_post
 )
+
+library(SIBER)
+
+# ---- create community names data frame ----
+# uncomment to use
+# str(demo.siber.data.2)
+
+demo.siber.data.2$group_name <- as.factor(demo.siber.data.2$group)
+
+demo.siber.data.2$group <- as.numeric(demo.siber.data.2$group_name) |>
+as.character()
+
+demo.siber.data.2$community_name <- as.factor(demo.siber.data.2$community)
+
+demo.siber.data.2$community <- as.numeric(demo.siber.data.2$community_name) |>
+as.character()
+
+cg_name <- demo.siber.data.2 |>
+dplyr::distinct(community, group, community_name, group_name)
+
+
 extract_mu(
 data = post_sam_siber,
-pkg = "SIBER"
+pkg = "SIBER",
+community_df = cg_name
 )
 
 }
