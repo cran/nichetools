@@ -1,4 +1,4 @@
-6c4abe6f67293c6c94e200a0744126e6 *DESCRIPTION
+5e53f3900eb3b5440f2f925d0ac743e7 *DESCRIPTION
 65ee2fad40b15b8bcce707cd90458deb *NAMESPACE
 eb6d49fd8afdf893ee2af65614979652 *NEWS.md
 6d23c26dd0299d3ed34f1f65722a637e *R/create_comparison.R
@@ -10,12 +10,12 @@ fed71839859ec6aeec81899cb33ffa48 *R/extract_mu.R
 145330d0154a095e0cc74df02be29b36 *R/extract_overlap.R
 b599a1c10741a0cbb9f11878e9061b73 *R/extract_sigma.R
 0360e18218bb0c34c4b24b35514462da *R/extract_similarities.R
-082c68640021de7ba100d8cfa2ec9c37 *R/niche_ellipse.R
+6effe3b78b9050e26a702b05919d207e *R/niche_ellipse.R
 d7a54580ba6b0c63cf4b2782267b6f43 *R/nichetools-package.R
-296b314a3cc9c58f831c9f5b6c1069c7 *R/zzz.R
-8ae5e248368e850463b18d9479be526b *README.md
-f61db891eb928123aba4412ca322f508 *build/partial.rdb
-8a88389cb2624230ef51e68c1eb41031 *build/vignette.rds
+04ba1e6bca3374d8eb3d5039ba10ccbe *R/zzz.R
+aa44df732122cc85286f1666d4f4a739 *README.md
+76e123f5dcc8dee07678412adc0a2a84 *build/partial.rdb
+498287700196d4ff835ab985e02d4fbd *build/vignette.rds
 480a2782a012f701b911b5460f8211b7 *data/mu_est_long.rda
 dbc304ebe32adcac832df225764e6987 *data/niw_fish_post.rda
 bb09b59550e3f8f3c7a61b6436bb66d2 *data/over_stat.rda
@@ -24,10 +24,10 @@ e40f59ba675625e2283ba11fa38b900a *data/sigma_est_wide.rda
 52c31b9c4a44e7ba41a27489145f2a6e *inst/CITATION
 5e1008e83f4549b1250ea09563e413fa *inst/doc/using-nichetools-with-the-package-SIBER.R
 b3e8c45b628e4ef463338c1b5c787d8e *inst/doc/using-nichetools-with-the-package-SIBER.Rmd
-7a4edbd9c526c41af39926aa2e72e93c *inst/doc/using-nichetools-with-the-package-SIBER.html
+1d547a075e23495af0a18065139facad *inst/doc/using-nichetools-with-the-package-SIBER.html
 db7f5e4e61eff9b84a395b4a502cfe96 *inst/doc/using-nichetools-with-the-package-nicheROVER.R
 a387abd40afe49e2f9827eb099d3ab83 *inst/doc/using-nichetools-with-the-package-nicheROVER.Rmd
-5b157eecdef53610c5b01fb3485c2e4b *inst/doc/using-nichetools-with-the-package-nicheROVER.html
+ccc35ff3462eabd358c175ea8705c19b *inst/doc/using-nichetools-with-the-package-nicheROVER.html
 42c18c0795647d245ab71f0817a3c21e *man/create_comparisons.Rd
 9cea3dc6aa6c017ea66c72baf56087a9 *man/extract_group_metrics.Rd
 bbce1df6f028f81ad90c21e6c6825004 *man/extract_layman.Rd
@@ -47,8 +47,8 @@ f41ed996be135fb35afe00641621da61 *man/figures/lifecycle-questioning.svg
 ed42e3fbd7cc30bc6ca8fa9b658e24a8 *man/figures/lifecycle-stable.svg
 bf2f1ad432ecccee3400afe533404113 *man/figures/lifecycle-superseded.svg
 396ce0309e79facd442ad770711c8c28 *man/mu_est_long.Rd
-9da33ae661084bbd908c055863542e6f *man/niche_ellipse.Rd
-b3470b7b80adba2e2f0d94b3d8e3852a *man/nichetools-package.Rd
+3f2cb5d426e49a5cd25297b67335bda7 *man/niche_ellipse.Rd
+1094488ebf59d76a5f2f9cf42de80137 *man/nichetools-package.Rd
 04b1be959c8a4657b2e47748cf64da2f *man/niw_fish_post.Rd
 373524ff2c8740541a797280941cb449 *man/over_stat.Rd
 a856cbadb43c94b4008f363de19f396d *man/post_sam_siber.Rd
@@ -63,5 +63,7 @@ e4912c522c8c5d60daf33c517c079bac *man/sigma_est_wide.Rd
 a6abe55c4da7216a0b495d6aa9f685c3 *tests/testthat/test-extract_sigma.R
 c965b2b4836cf943f017f127b7e5ca4c *tests/testthat/test-extract_similarities.R
 16f026c0bb77f60b77ada5fe1cb9eabc *tests/testthat/test-niche_ellipse.R
+f41669228376358e26ff63d863981261 *vignettes/using-nichetools-and-nicheROVER-with-three-isotopes.R
+a92d4b4168d7936beb1b4ad56e54e13a *vignettes/using-nichetools-and-nicheROVER-with-three-isotopes.html
 b3e8c45b628e4ef463338c1b5c787d8e *vignettes/using-nichetools-with-the-package-SIBER.Rmd
 a387abd40afe49e2f9827eb099d3ab83 *vignettes/using-nichetools-with-the-package-nicheROVER.Rmd
